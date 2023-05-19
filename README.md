@@ -27,9 +27,9 @@ int main() {
     // Create the tc_config struct containing every key-value inside your
     // config file.
     tc_config *config;
-    int ok = tc_load_config(&config, "tiny.conf");
+    int err = tc_load_config(&config, "tiny.conf");
     // Check for errors
-    if (!ok) {
+    if (err) {
         printf("Error loading config\n");
         return 1;
     }
