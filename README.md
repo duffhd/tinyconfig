@@ -1,6 +1,6 @@
 ### tiny config
 
-Tiny config is a simple key-value pair configuration file that cant hold
+Tiny config is a simple key-value pair configuration file that can hold
 numbers (decimal or floating point) and strings.
 
 A simple config example:
@@ -46,7 +46,6 @@ int main() {
     
     // Now you can safely use your values
     
-    
     // Don't forget to free the config structure.
     tc_free(config);
 
@@ -58,7 +57,8 @@ int main() {
 Values-Keys:
 - Values can be CamelCase or snake_case
 - The only acceptable special character inside names are underlines _
-- Numbers are accepted for names too, they can contain a . to indicate a floating point number
+- Numbers are accepted for keys too
+- Numbers can contain a . to indicate a floating point number
 
 Comments:
 - Comments are delimited with a #
