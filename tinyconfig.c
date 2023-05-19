@@ -74,8 +74,9 @@ int tc_load_config(tc_config **config, const char *file_path)
 
     bool is_key_parsing = true;
 
-    size_t pos  = 0;
-    int size    = 0;
+    size_t config_size = CONFIG_DEFAULT_SIZE;
+    size_t pos         = 0;
+    int size           = 0;
     char c;
     while((c = file_buffer[pos++]) != '\0') {
         switch (c) {
@@ -125,8 +126,9 @@ int tc_load_config(tc_config **config, const char *file_path)
                     char *dest = malloc(sizeof(char) * (end - start + 1));
                     strcopy(file_buffer, start - 1, end - 2, dest);
 
-                    if (size > CONFIG_DEFAULT_SIZE) {
-                        realloc(tmp_conf->pair, CONFIG_DEFAULT_SIZE + 20);
+                    if (size > config_size) {
+                        config_size += 20;
+                        realloc(tmp_conf->pair, config_size);
                     }
 
                     if (is_key_parsing) {
