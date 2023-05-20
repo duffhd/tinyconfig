@@ -9,7 +9,8 @@ A simple config example:
 project_name=tinyconfig
 decimal=54
 floating_point=3.14
-42=key_number # Numbers can be used as keys
+# Numbers can be used as keys
+42=key_number 
 # You can use whitepaces before and after equals =
 example = 34
 ```
