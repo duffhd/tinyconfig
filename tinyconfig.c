@@ -5,10 +5,11 @@
 #include "include/tinyconfig.h"
 
 #include <ctype.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include <malloc.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // Modified #define names, originally from tinyxml2
 // https://github.com/leethomason/tinyxml2
@@ -61,7 +62,7 @@ int tc_load_config(tc_config **config, const char *file_path)
 
     char* file_buffer = (char *) malloc(file_size + 1);
     if (!file_buffer) {
-        return 0;
+        return -1;
     }
 
     size_t bytes_read = fread(file_buffer, sizeof(char), file_size, fp);
@@ -70,15 +71,17 @@ int tc_load_config(tc_config **config, const char *file_path)
     fclose(fp);
 
     tc_config *tmp_conf = (tc_config *) malloc(sizeof(tc_config));
+    if (!tmp_conf) {
+        return -1;
+    }
     tmp_conf->size = 0;
 
     bool is_key_parsing = true;
 
     size_t config_size = CONFIG_DEFAULT_SIZE;
-    size_t pos         = 0;
     int size           = 0;
-    char c;
-    while((c = file_buffer[pos++]) != '\0') {
+    char c             = 0;
+    for(size_t pos = 0; pos < bytes_read; (c = file_buffer[pos++])) {
         switch (c) {
             case ' ': break;
             case '=': {
