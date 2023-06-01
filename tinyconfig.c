@@ -83,10 +83,9 @@ int tc_load_config(tc_config **config, const char *file_path)
     char c             = 0;
     for(size_t pos = 0; pos < bytes_read; (c = file_buffer[pos++])) {
         switch (c) {
-            case ' ': break;
-            case '=': {
-                break;
-            }
+            case ' ':
+            case '\t':
+            case '=': break;
             case '#': {
                 while ((c = file_buffer[pos++]) != '\0') {
                     if (c == '\n') break;
@@ -95,9 +94,7 @@ int tc_load_config(tc_config **config, const char *file_path)
             }
             case '\0':
             case '\r':
-            case '\n': {
-                break;
-            }
+            case '\n': break;
             default: {
                 if (isalnum(c)) {
                     bool count_end = true;
@@ -115,7 +112,7 @@ int tc_load_config(tc_config **config, const char *file_path)
                         {
                             continue;
                         }
-                        else if (c == ' ')
+                        else if (c == ' ' || c == '\t')
                         {
                             end = pos;
                             count_end = false;
