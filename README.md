@@ -17,7 +17,7 @@ example = 34
 
 ### How to use
 Tiny config is a simple header and source file that can be called from any
-build system easily, you can pull this repository or simply copy the source file
+build system easily, you can pull this repository or simply copy the source/header file
 `tinyconfig.c` and include the header `tinyconfig.h`.
 
 Inside your `C` or `C++` code:
@@ -35,17 +35,24 @@ int main() {
         return 1;
     }
     
-    // Load any value by using the provided functions, simply
-    // pass the key name you want to the correct function to get the type
-    // you want.
-    int value_from_config;
-    // Always check for errors
-    if (!tc_get_int(config, "decimal", &value_from_config)) {
-        printf("Error parsing value\n");
-        return 1;              
+    // You can now retrieve values from the file,
+    // you can bring in your own methods of conversion.
+    // More unsafe way:
+    char *player_power = tc_get_value(config, "player_power");
+    printf("player_power: %i\n", atoi(player_power));
+
+    // Safer:
+    char *player_int = tc_get_value(config, "base_attack");
+    if (player_int != NULL) {
+        printf("base_attack: %f\n", atof(player_int));
     }
     
-    // Now you can safely use your values
+    // You can create new values if they don't exist or just update already existing ones:
+    tc_set_value(config, "player_dex", "14");
+    
+    // Now if you need you can persist the changes back to a file,
+    // don't forget to check if the file already exists.
+    tc_save_to_file(config, "modified.conf");
     
     // Don't forget to free the config structure.
     tc_free(config);
