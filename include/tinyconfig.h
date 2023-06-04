@@ -6,24 +6,14 @@
 
 #include <stdio.h>
 
-#define CONFIG_DEFAULT_SIZE 50
-
-typedef struct {
-    char *key;
-    char *value;
-} tc_pair;
-
-typedef struct {
-    tc_pair pair[CONFIG_DEFAULT_SIZE];
-    size_t  size;
-} tc_config;
+typedef struct tc_config tc_config;
 
 int tc_load_config(tc_config **config, const char *file_path);
 
-char *tc_get_char(tc_config *config, const char *key_name);
+char *tc_get_value(tc_config *config, const char *key_name);
 
-int tc_get_int(tc_config *config, const char *key_name, int *result);
+char *tc_set_value(tc_config *config, const char *key_name, char *value);
 
-int tc_get_float(tc_config *config, const char *key_name, float *result);
+void tc_save_to_file(tc_config *config, const char *file_path);
 
 void tc_free(tc_config *config);
