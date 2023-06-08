@@ -61,6 +61,15 @@ int main() {
 }
 ```
 
+You can manually define the initial config allocation size and grow size using you build system.
+A CMake example:
+```cmake
+add_compile_definitions(TC_CONFIG_DEFAULT_SIZE=10)
+add_compile_definitions(TC_CONFIG_DEFAULT_GROW_SIZE=4)
+```
+
+This will overwrite the default values provided by tinyconfig.
+
 ### Parsing rules
 Values-Keys:
 - Values can be CamelCase or snake_case
