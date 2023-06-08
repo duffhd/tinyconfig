@@ -1,3 +1,7 @@
+## 1.1.0
+- Add the possibility to override the #define values: `TC_CONFIG_DEFAULT_SIZE` and `TC_CONFIG_DEFAULT_GROW_SIZE` using the build system.
+- Add negative number parsing.
+
 ## 1.0.0
 - Changed how to get values from the config file, removed get string, int and float.
 - Added `tc_get_value` to get the string representation of the value you want, you'll need to provide the means to convert the variable.
