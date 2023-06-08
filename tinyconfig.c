@@ -34,8 +34,13 @@
 	#define TC_FTELL ftell
 #endif
 
-#define CONFIG_DEFAULT_SIZE 30
-#define CONFIG_DEFAULT_GROW_SIZE 10
+#ifndef TC_CONFIG_DEFAULT_SIZE
+    #define TC_CONFIG_DEFAULT_SIZE 30
+#endif
+
+#ifndef TC_CONFIG_DEFAULT_GROW_SIZE
+    #define TC_CONFIG_DEFAULT_GROW_SIZE 10
+#endif
 
 typedef struct {
     char *key;
@@ -96,15 +101,15 @@ int tc_load_config(tc_config **config, const char *file_path)
     tc_config *tmp_conf = malloc(sizeof(tc_config));
     if (!tmp_conf) return -1;
 
-    tmp_conf->pair        = malloc(sizeof(tc_pair) * CONFIG_DEFAULT_SIZE);
+    tmp_conf->pair        = malloc(sizeof(tc_pair) * TC_CONFIG_DEFAULT_SIZE);
     tmp_conf->size        = 0;
-    tmp_conf->alloc_size  = CONFIG_DEFAULT_SIZE;
+    tmp_conf->alloc_size  = TC_CONFIG_DEFAULT_SIZE;
     tmp_conf->buffer_size = 0;
 
     int size            = 0;
     char c              = 0;
     bool is_key_parsing = true;
-    size_t config_size  = CONFIG_DEFAULT_SIZE;
+    size_t config_size  = TC_CONFIG_DEFAULT_SIZE;
     for(size_t pos = 0; pos < bytes_read; (c = file_buffer[pos++]))
     {
         switch (c) {
@@ -121,7 +126,7 @@ int tc_load_config(tc_config **config, const char *file_path)
             case '\r':
             case '\n': break;
             default: {
-                if (isalnum(c)) {
+                if (isalnum(c) || c == '-') {
                     bool count_end = true;
                     size_t start = pos;
                     size_t end;
@@ -153,7 +158,7 @@ int tc_load_config(tc_config **config, const char *file_path)
                     tc_str_copy(file_buffer, start - 1, end - 2, dest);
 
                     if (size > config_size) {
-                        config_size         += CONFIG_DEFAULT_GROW_SIZE;
+                        config_size         += TC_CONFIG_DEFAULT_GROW_SIZE;
                         tmp_conf->alloc_size = config_size;
 
                         tc_pair *new_pair = realloc(tmp_conf->pair, config_size);
@@ -228,7 +233,7 @@ char *tc_set_value(tc_config *config, const char *key_name, char *value)
     }
 
     if (config->size + 1 > config->alloc_size) {
-        tc_pair *new_pair = realloc(config->pair, config->alloc_size + CONFIG_DEFAULT_GROW_SIZE);
+        tc_pair *new_pair = realloc(config->pair, config->alloc_size + TC_CONFIG_DEFAULT_GROW_SIZE);
         if (new_pair != NULL) {
             config->pair = new_pair;
         }
