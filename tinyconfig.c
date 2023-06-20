@@ -13,10 +13,10 @@
 // Modified #define names, originally from tinyxml2
 // https://github.com/leethomason/tinyxml2
 #if defined(_WIN64)
-#define TC_FSEEK _fseeki64
-#define TC_FTELL _ftelli64
-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || (__CYGWIN__)
-#define TC_FSEEK fseeko
+    #define TC_FSEEK _fseeki64
+    #define TC_FTELL _ftelli64
+#elif defined(__unix__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || (__CYGWIN__)
+    #define TC_FSEEK fseeko
 	#define TC_FTELL ftello
 #elif defined(__ANDROID__)
     #if __ANDROID_API__ > 24
@@ -26,9 +26,6 @@
         #define TC_FSEEK fseeko
         #define TC_FTELL ftello
     #endif
-#elif defined(__unix__) && defined(__x86_64__)
-	#define TC_FSEEK fseeko64
-	#define TC_FTELL ftello64
 #else
 	#define TC_FSEEK fseek
 	#define TC_FTELL ftell
@@ -79,9 +76,14 @@ static void tc_str_copy_to_section(const char *source, size_t start, size_t end,
 int tc_load_config(tc_config **config, const char *file_path)
 {
     FILE *fp;
+#ifdef _MSC_VER
     int err = fopen_s(&fp, file_path, "rb");
     if (err)
         return -1;
+#else
+    fp = fopen(file_path, "rb");
+#endif
+
     if (fgetc(fp) == EOF || ferror(fp))
         return -1;
 
@@ -239,31 +241,37 @@ char *tc_set_value(tc_config *config, const char *key_name, char *value)
         }
     }
 
-    char *new_key = malloc(strlen(key_name) * sizeof(char));
+    size_t key_size = strlen(key_name);
+    char *new_key   = malloc(key_size * sizeof(char));
     strcpy(new_key, key_name);
     config->pair[i].key = new_key;
 
-    char *new_value = malloc(strlen(value) * sizeof(char));
+    size_t value_size = strlen(value);
+    char *new_value   = malloc(value_size * sizeof(char));
     strcpy(new_value, value);
     config->pair[i].value = new_value;
 
-    config->size += 1;
+    config->size        += 1;
+    // + 1 for '\n'
+    config->buffer_size += key_size + value_size + 1;
     return config->pair[i].value;
 }
 
 void tc_save_to_file(tc_config *config, const char *file_path)
 {
     FILE *fp;
+
+#ifdef _MSC_VER
     int err = fopen_s(&fp, file_path, "w");
     if (err)
         return;
-
-#ifdef _MSC_VER
-    char *buffer = malloc(sizeof(char) * config->buffer_size);
 #else
-    char buffer[config->buffer_size];
+    fp = fopen(file_path, "w");
+    if (ferror(fp))
+        return;
 #endif
 
+    char *buffer = malloc(sizeof(char) * config->buffer_size);
     size_t buffer_location = 0;
 
     for (size_t i = 0; i != config->size; i += 1)
