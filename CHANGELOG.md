@@ -1,3 +1,9 @@
+## 1.1.1
+- Fixed file opening on systems other than Windows (use plain fopen)
+- Fixed `tc_set_value` not incrementing the config struct `buffer_size` if the setted value was associated with a new key.
+- Always malloc the buffer to save the new config to a file on `tc_save_to_file`.
+- Stop using fseeko64 and fteelo64 on x64 \_\_unix\_\_
+
 ## 1.1.0
 - Add the possibility to override the #define values: `TC_CONFIG_DEFAULT_SIZE` and `TC_CONFIG_DEFAULT_GROW_SIZE` using the build system.
 - Add negative number parsing.
