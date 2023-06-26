@@ -1,3 +1,6 @@
+## 1.1.2
+- Fixed freeing the new config buffer on `tc_save_to_file` to work on every compiler.
+
 ## 1.1.1
 - Fixed file opening on systems other than Windows (use plain fopen)
 - Fixed `tc_set_value` not incrementing the config struct `buffer_size` if the setted value was associated with a new key.
