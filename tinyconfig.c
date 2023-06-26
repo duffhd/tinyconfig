@@ -296,9 +296,7 @@ void tc_save_to_file(tc_config *config, const char *file_path)
     fputs(buffer, fp);
     fclose(fp);
 
-#ifdef _MSC_VER
     free(buffer);
-#endif
 }
 
 void tc_free(tc_config *config)
