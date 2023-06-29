@@ -21,7 +21,7 @@ int main() {
         printf("base_attack: %f\n", atof(player_int));
     }
 
-    // Set a value to a certain key, if the value is does not exist it'll be created.
+    // Set a value to a certain key, if the value doesn't exist it'll be created.
     char *new_player_power = tc_set_value(config, "player_power", "330");
     printf("modified player_power: %i\n", atoi(new_player_power));
 
