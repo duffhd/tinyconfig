@@ -263,12 +263,16 @@ void tc_save_to_file(tc_config *config, const char *file_path)
 
 #ifdef _MSC_VER
     int err = fopen_s(&fp, file_path, "w");
-    if (err)
+    if (err) {
+        fclose(fp);
         return;
+    }
 #else
     fp = fopen(file_path, "w");
-    if (ferror(fp))
+    if (ferror(fp)) {
+        fclose(fp);
         return;
+    }
 #endif
 
     char *buffer = malloc(sizeof(char) * config->buffer_size);
